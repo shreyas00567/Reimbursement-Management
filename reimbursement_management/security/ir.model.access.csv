@@ -1,0 +1,5 @@
+id,name,model_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_expense,expense,model_expense_claim,1,1,1,1
+
+access_approval,approval,model_expense_approval,1,1,1,1
