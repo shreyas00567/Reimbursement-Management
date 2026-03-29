@@ -67,3 +67,7 @@ class ExpenseClaim(models.Model):
     def action_reject(self):
 
         self.state='rejected'
+        manager_id=fields.Many2one(
+'hr.employee',
+string="Manager"
+)
