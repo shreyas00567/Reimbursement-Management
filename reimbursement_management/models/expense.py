@@ -2,34 +2,55 @@ from odoo import models, fields, api
 
 class ExpenseClaim(models.Model):
 
-    _name='expense.claim'
+    _name = 'expense.claim'
+    _description = 'Expense Claim'
 
-    _description='Expense Claim'
 
-
-    name=fields.Char(required=True)
-
-    employee_id=fields.Many2one(
-        'hr.employee',
+    name = fields.Char(
+        string="Expense Title",
         required=True
     )
 
-    manager_id=fields.Many2one(
+    employee_id = fields.Many2one(
+        'hr.employee',
+        string="Employee",
+        required=True
+    )
+
+    manager_id = fields.Many2one(
         'hr.employee',
         string="Manager"
     )
 
-    amount=fields.Float()
+    amount = fields.Float(
+        string="Amount"
+    )
 
-    currency=fields.Char()
+    category = fields.Char(
+        string="Category"
+    )
 
-    category=fields.Char()
+    description = fields.Text(
+        string="Description"
+    )
 
-    description=fields.Text()
+    date = fields.Date(
+        string="Expense Date"
+    )
 
-    date=fields.Date()
+    employee_currency = fields.Char(
+        string="Expense Currency"
+    )
 
-    state=fields.Selection([
+    company_currency = fields.Char(
+        string="Company Currency"
+    )
+
+    converted_amount = fields.Float(
+        string="Amount in Company Currency"
+    )
+
+    state = fields.Selection([
 
         ('draft','Draft'),
 
@@ -43,43 +64,61 @@ class ExpenseClaim(models.Model):
 
         ('rejected','Rejected')
 
-    ],default='draft')
+    ], default='draft', string="Status")
 
 
-    approval_ids=fields.One2many(
+    approval_ids = fields.One2many(
 
         'expense.approval',
 
-        'expense_id'
+        'expense_id',
+
+        string="Approvals"
 
     )
 
 
-    rule_id=fields.Many2one(
+    approval_count = fields.Integer(
 
-        'approval.rule'
+        compute="_compute_approval_count"
 
     )
+
+
+    rule_id = fields.Many2one(
+
+        'approval.rule',
+
+        string="Approval Rule"
+
+    )
+
+
+    def _compute_approval_count(self):
+
+        for rec in self:
+
+            rec.approval_count = len(rec.approval_ids)
 
 
     def action_submit(self):
 
-        self.state='submitted'
+        self.state = 'submitted'
 
 
     def action_manager_approve(self):
 
-        self.state='manager'
+        self.state = 'manager'
 
 
     def action_approve(self):
 
-        self.state='approved'
+        self.state = 'approved'
 
 
     def action_reject(self):
 
-        self.state='rejected'
+        self.state = 'rejected'
 
 
     def check_rules(self):
