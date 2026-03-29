@@ -1,0 +1,19 @@
+Employee → Expense Claim → Approval Chain → Final Status
+
+Workflow Engine:
+
+Employee submits expense
+
+Approval created for manager
+
+Next approver triggered based on sequence
+
+Conditional rules evaluated
+
+Expense approved or rejected
+
+Design Pattern:
+
+Modular model design
+Rule based approval engine
+Extensible workflow architecture

@@ -1,0 +1,5 @@
+odoo
+python
+psycopg2
+requests
+pytesseract
