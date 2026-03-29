@@ -60,3 +60,20 @@ class ExpenseApproval(models.Model):
         self.state='rejected'
 
         self.expense_id.state='rejected'
+        def check_approval_percentage(self):
+
+    approvals=self.expense_id.approval_ids.filtered(
+
+        lambda a:a.state=='approved'
+
+    )
+
+    total=len(self.expense_id.approval_ids)
+
+    if total:
+
+        percent=(len(approvals)/total)*100
+
+        if percent>=60:
+
+            self.expense_id.state='approved'
