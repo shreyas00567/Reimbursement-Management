@@ -21,6 +21,10 @@ class ExpenseClaim(models.Model):
 
     amount=fields.Float()
 
+    currency=fields.Char()
+
+    category=fields.Char()
+
     description=fields.Text()
 
     date=fields.Date()
@@ -32,6 +36,8 @@ class ExpenseClaim(models.Model):
         ('submitted','Submitted'),
 
         ('manager','Manager Approval'),
+
+        ('finance','Finance Approval'),
 
         ('approved','Approved'),
 
@@ -45,6 +51,13 @@ class ExpenseClaim(models.Model):
         'expense.approval',
 
         'expense_id'
+
+    )
+
+
+    rule_id=fields.Many2one(
+
+        'approval.rule'
 
     )
 
@@ -67,7 +80,10 @@ class ExpenseClaim(models.Model):
     def action_reject(self):
 
         self.state='rejected'
-        manager_id=fields.Many2one(
-'hr.employee',
-string="Manager"
-)
+
+
+    def check_rules(self):
+
+        if self.rule_id:
+
+            self.rule_id.check_rule(self)
