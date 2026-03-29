@@ -1,7 +1,13 @@
-id,name,model_id:id,perm_read,perm_write,perm_create,perm_unlink
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 
-access_expense,expense,model_expense_claim,1,1,1,1
+expense_employee,expense employee,model_expense_claim,group_employee,1,0,1,0
 
-access_approval,approval,model_expense_approval,1,1,1,1
+expense_manager,expense manager,model_expense_claim,group_manager,1,1,0,0
 
-access_rule,rule,model_approval_rule,1,1,1,1
+expense_admin,expense admin,model_expense_claim,group_admin,1,1,1,1
+
+approval_manager,approval manager,model_expense_approval,group_manager,1,1,1,0
+
+approval_admin,approval admin,model_expense_approval,group_admin,1,1,1,1
+
+rule_admin,rule admin,model_approval_rule,group_admin,1,1,1,1

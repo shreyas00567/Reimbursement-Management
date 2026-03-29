@@ -34,6 +34,18 @@ class ExpenseClaim(models.Model):
         string="Description"
     )
 
+    manager_comment = fields.Text(
+        string="Manager Comment"
+    )
+
+    approval_status = fields.Char(
+        string="Approval Status"
+    )
+
+    history = fields.Text(
+        string="Approval History"
+    )
+
     date = fields.Date(
         string="Expense Date"
     )
@@ -101,24 +113,47 @@ class ExpenseClaim(models.Model):
             rec.approval_count = len(rec.approval_ids)
 
 
+    # Auto assign manager from employee hierarchy
+    @api.onchange('employee_id')
+    def assign_manager(self):
+
+        if self.employee_id:
+
+            self.manager_id = self.employee_id.parent_id
+
+
     def action_submit(self):
 
         self.state = 'submitted'
+
+        self.approval_status = "Waiting for approval"
+
+        self.log_history("Expense submitted")
 
 
     def action_manager_approve(self):
 
         self.state = 'manager'
 
+        self.log_history("Manager approved expense")
+
 
     def action_approve(self):
 
         self.state = 'approved'
 
+        self.approval_status = "Approved"
+
+        self.log_history("Expense approved")
+
 
     def action_reject(self):
 
         self.state = 'rejected'
+
+        self.approval_status = "Rejected"
+
+        self.log_history("Expense rejected")
 
 
     def check_rules(self):
@@ -126,3 +161,15 @@ class ExpenseClaim(models.Model):
         if self.rule_id:
 
             self.rule_id.check_rule(self)
+
+
+    # History tracking
+    def log_history(self, message):
+
+        if self.history:
+
+            self.history = self.history + "\n" + message
+
+        else:
+
+            self.history = message

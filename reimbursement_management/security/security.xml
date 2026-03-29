@@ -1,0 +1,35 @@
+<odoo>
+
+<!-- Employee Role -->
+
+<record id="group_employee" model="res.groups">
+
+    <field name="name">Employee</field>
+
+    <field name="category_id" ref="base.module_category_human_resources"/>
+
+</record>
+
+
+<!-- Manager Role -->
+
+<record id="group_manager" model="res.groups">
+
+    <field name="name">Manager</field>
+
+    <field name="category_id" ref="base.module_category_human_resources"/>
+
+</record>
+
+
+<!-- Admin Role -->
+
+<record id="group_admin" model="res.groups">
+
+    <field name="name">Reimbursement Admin</field>
+
+    <field name="category_id" ref="base.module_category_human_resources"/>
+
+</record>
+
+</odoo>
