@@ -1,34 +1,73 @@
-# Reimbursement Management System
+Reimbursement Management System – Odoo Hackathon
 
-## Problem Statement
+Problem:
 
-Manual reimbursement processes are time consuming and lack transparency.
+Manual reimbursement processes are slow, error prone and lack workflow automation.
 
-## Solution
+Solution:
 
-Developed an Odoo module implementing:
+Developed a configurable reimbursement workflow engine in Odoo supporting sequential and conditional approvals.
 
-• Expense submission workflow  
-• Multi level approval system  
-• Sequential approval logic  
-• Role based access  
+Features Implemented:
 
-## Architecture
+Expense submission
+
+Employee manager relationship
+
+Multi level approval workflow
+
+Sequential approval logic
+
+Conditional approval rules
+
+Percentage approval rule
+
+Specific approver rule (CFO)
+
+Hybrid rule support
+
+Approval comments
+
+Expense tracking
+
+Architecture:
 
 Models:
 
-expense.claim → Stores expenses  
-expense.approval → Handles approvals  
+expense.claim → expense data
 
-## Workflow
+expense.approval → approval workflow
 
-Employee submits expense  
-Manager approval triggered  
-Next approver based on sequence  
-Final approval updates status  
+approval.rule → conditional logic
 
-## Future Enhancements
+Workflow:
 
-OCR receipt scanning  
-Currency conversion API  
-Conditional approval rules  
+Employee submits expense
+
+Manager approval
+
+Finance approval
+
+Sequential approval chain
+
+Conditional rules evaluated
+
+Final approval
+
+Future Enhancements:
+
+OCR receipt scanning
+
+Currency conversion API
+
+Fraud detection
+
+Email notifications
+
+Tech Stack:
+
+Odoo
+
+Python
+
+PostgreSQL
