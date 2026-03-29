@@ -9,9 +9,13 @@
 
 'security/security.xml',
 
-'security/ir.model.access.csv'
+'security/ir.model.access.csv',
 
-]
+'views/expense_views.xml',
+
+'views/approval_views.xml'
+
+],
 
 
 'installable':True,

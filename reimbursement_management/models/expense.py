@@ -1,4 +1,7 @@
 from odoo import models, fields, api
+import base64
+import tempfile
+import re
 
 class ExpenseClaim(models.Model):
 
@@ -59,21 +62,32 @@ class ExpenseClaim(models.Model):
     )
 
     converted_amount = fields.Float(
-        string="Amount in Company Currency"
+        string="Converted Amount"
+    )
+
+    conversion_rate = fields.Float(
+        string="Conversion Rate"
+    )
+
+    receipt = fields.Binary(
+        string="Receipt"
+    )
+
+    ocr_text = fields.Text(
+        string="OCR Extracted Text"
+    )
+
+    detected_amount = fields.Float(
+        string="Detected Amount"
     )
 
     state = fields.Selection([
 
         ('draft','Draft'),
-
         ('submitted','Submitted'),
-
         ('manager','Manager Approval'),
-
         ('finance','Finance Approval'),
-
         ('approved','Approved'),
-
         ('rejected','Rejected')
 
     ], default='draft', string="Status")
@@ -82,9 +96,7 @@ class ExpenseClaim(models.Model):
     approval_ids = fields.One2many(
 
         'expense.approval',
-
         'expense_id',
-
         string="Approvals"
 
     )
@@ -100,7 +112,6 @@ class ExpenseClaim(models.Model):
     rule_id = fields.Many2one(
 
         'approval.rule',
-
         string="Approval Rule"
 
     )
@@ -113,7 +124,6 @@ class ExpenseClaim(models.Model):
             rec.approval_count = len(rec.approval_ids)
 
 
-    # Auto assign manager from employee hierarchy
     @api.onchange('employee_id')
     def assign_manager(self):
 
@@ -122,11 +132,72 @@ class ExpenseClaim(models.Model):
             self.manager_id = self.employee_id.parent_id
 
 
+    def convert_currency(self):
+
+        if self.conversion_rate:
+
+            self.converted_amount = self.amount * self.conversion_rate
+
+
+    def run_ocr(self):
+
+        if not self.receipt:
+
+            return
+
+        try:
+
+            import easyocr
+
+            reader = easyocr.Reader(['en'])
+
+            image_data = base64.b64decode(self.receipt)
+
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as f:
+
+                f.write(image_data)
+
+                image_path = f.name
+
+
+            result = reader.readtext(image_path, detail=0)
+
+            extracted_text = " ".join(result)
+
+            self.ocr_text = extracted_text
+
+
+            amounts = re.findall(r'\d+\.\d+|\d+', extracted_text)
+
+
+            if amounts:
+
+                detected = max([float(a) for a in amounts])
+
+                self.detected_amount = detected
+
+                self.amount = detected
+
+
+            if not self.description:
+
+                self.description = extracted_text[:200]
+
+
+            self.log_history("OCR processed successfully")
+
+        except Exception as e:
+
+            self.log_history("OCR failed : " + str(e))
+
+
     def action_submit(self):
 
         self.state = 'submitted'
 
         self.approval_status = "Waiting for approval"
+
+        self.run_ocr()
 
         self.log_history("Expense submitted")
 
@@ -163,7 +234,6 @@ class ExpenseClaim(models.Model):
             self.rule_id.check_rule(self)
 
 
-    # History tracking
     def log_history(self, message):
 
         if self.history:

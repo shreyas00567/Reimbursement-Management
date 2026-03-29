@@ -1,0 +1,76 @@
+<odoo>
+
+<record id="view_approval_tree" model="ir.ui.view">
+
+    <field name="name">expense.approval.tree</field>
+
+    <field name="model">expense.approval</field>
+
+    <field name="arch" type="xml">
+
+        <tree>
+
+            <field name="expense_id"/>
+
+            <field name="approver_id"/>
+
+            <field name="sequence"/>
+
+            <field name="state"/>
+
+        </tree>
+
+    </field>
+
+</record>
+
+
+<record id="view_approval_form" model="ir.ui.view">
+
+    <field name="name">expense.approval.form</field>
+
+    <field name="model">expense.approval</field>
+
+    <field name="arch" type="xml">
+
+        <form>
+
+            <sheet>
+
+                <group>
+
+                    <field name="expense_id"/>
+
+                    <field name="approver_id"/>
+
+                    <field name="sequence"/>
+
+                    <field name="state"/>
+
+                    <field name="comments"/>
+
+                </group>
+
+                <footer>
+
+                    <button name="action_approve"
+                            string="Approve"
+                            type="object"
+                            class="btn-success"/>
+
+                    <button name="action_reject"
+                            string="Reject"
+                            type="object"
+                            class="btn-danger"/>
+
+                </footer>
+
+            </sheet>
+
+        </form>
+
+    </field>
+
+</record>
+
+</odoo>
